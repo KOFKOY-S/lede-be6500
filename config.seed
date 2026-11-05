@@ -1,0 +1,6 @@
+# LEDE 云编译配置（JDCloud BE6500 / jdcloud_re-cs-06）
+# 只指定目标板 + 设备，其余由 make defconfig 自动补全
+
+CONFIG_TARGET_qualcommbe=y
+CONFIG_TARGET_qualcommbe_ipq53xx=y
+CONFIG_TARGET_qualcommbe_ipq53xx_DEVICE_jdcloud_re-cs-06=y
