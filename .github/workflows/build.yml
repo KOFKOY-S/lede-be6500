@@ -37,6 +37,16 @@ jobs:
           cp ../config.seed .config
           make defconfig
 
+
+      - name: Shrink kernel (fit 7 MiB HLOS)
+        working-directory: lede
+        run: |
+          # 内核用 -Os、去调试信息、关 BPF，压缩到 7 MiB 以内
+          sed -i 's/^CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=y$/# CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE is not set/; s/^# CONFIG_CC_OPTIMIZE_FOR_SIZE is not set$/CONFIG_CC_OPTIMIZE_FOR_SIZE=y/' target/linux/generic/config-6.18
+          sed -i '/^CONFIG_DEBUG_INFO=y$/d' target/linux/qualcommbe/config-6.18
+          sed -i 's/^CONFIG_BPF_SYSCALL=y$/# CONFIG_BPF_SYSCALL is not set/' target/linux/generic/config-6.18
+          grep -E 'CC_OPTIMIZE|BPF_SYSCALL' target/linux/generic/config-6.18
+
       - name: Download source archives
         working-directory: lede
         run: |
