@@ -38,14 +38,11 @@ jobs:
           make defconfig
 
 
-      - name: Shrink kernel (fit 7 MiB HLOS)
+      - name: Set HLOS to 12M
         working-directory: lede
         run: |
-          # 内核用 -Os、去调试信息、关 BPF，压缩到 7 MiB 以内
-          sed -i 's/^CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE=y$/# CONFIG_CC_OPTIMIZE_FOR_PERFORMANCE is not set/; s/^# CONFIG_CC_OPTIMIZE_FOR_SIZE is not set$/CONFIG_CC_OPTIMIZE_FOR_SIZE=y/' target/linux/generic/config-6.18
-          sed -i '/^CONFIG_DEBUG_INFO=y$/d' target/linux/qualcommbe/config-6.18
-          sed -i 's/^CONFIG_BPF_SYSCALL=y$/# CONFIG_BPF_SYSCALL is not set/' target/linux/generic/config-6.18
-          grep -E 'CC_OPTIMIZE|BPF_SYSCALL' target/linux/generic/config-6.18
+          sed -i '/define Device\/jdcloud_re-cs-06/,/^endef/ s/KERNEL_SIZE := 7168k/KERNEL_SIZE := 12288k/' target/linux/qualcommbe/image/ipq53xx.mk
+          grep -A12 'define Device/jdcloud_re-cs-06' target/linux/qualcommbe/image/ipq53xx.mk | head -14
 
       - name: Download source archives
         working-directory: lede
